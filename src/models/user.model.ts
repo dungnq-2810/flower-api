@@ -1,14 +1,8 @@
-import { Schema, model } from 'mongoose';
-import { IUser, UserDocument } from '../interfaces/models/user.interface';
+import { Schema, model } from "mongoose";
+import { IUser, UserDocument } from "../interfaces/models/user.interface";
 
 const userSchema = new Schema<IUser>(
   {
-    id: {
-      type: Number,
-      unique: true,
-      required: true,
-      min: 1,
-    },
     name: {
       type: String,
       required: true,
@@ -41,8 +35,8 @@ const userSchema = new Schema<IUser>(
     },
     role: {
       type: String,
-      enum: ['admin', 'customer'],
-      default: 'customer',
+      enum: ["admin", "customer"],
+      default: "customer",
     },
     createdAt: {
       type: String,
@@ -54,7 +48,6 @@ const userSchema = new Schema<IUser>(
     toJSON: {
       virtuals: true,
       transform: (_, ret) => {
-        delete ret.password;
         delete ret._id;
         delete ret.__v;
         return ret;
@@ -63,12 +56,11 @@ const userSchema = new Schema<IUser>(
     toObject: {
       virtuals: true,
       transform: (_, ret) => {
-        delete ret.password;
         delete ret._id;
         delete ret.__v;
         return ret;
-      }
-    }
+      },
+    },
   }
 );
 
@@ -77,7 +69,7 @@ userSchema.index({ id: 1 }, { unique: true });
 userSchema.index({ email: 1 }, { unique: true });
 
 // Auto-increment ID plugin
-userSchema.pre('save', async function(next) {
+userSchema.pre("save", async function (next) {
   const doc = this as any;
   if (!doc.id) {
     // @ts-ignore
@@ -88,6 +80,6 @@ userSchema.pre('save', async function(next) {
 });
 
 // @ts-ignore
-const User = model<UserDocument>('User', userSchema);
+const User = model<UserDocument>("User", userSchema);
 
 export default User;

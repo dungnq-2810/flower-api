@@ -1,7 +1,7 @@
-import { Request, Response, NextFunction } from 'express';
-import userService from '../services/user.service';
-import { validate } from '../middlewares/validation.middleware';
-import { loginSchema, createUserSchema } from '../validations/user.validation';
+import { Request, Response, NextFunction } from "express";
+import userService from "../services/user.service";
+import { validate } from "../middlewares/validation.middleware";
+import { loginSchema, createUserSchema } from "../validations/user.validation";
 
 export class AuthController {
   public register = [
@@ -9,9 +9,9 @@ export class AuthController {
     async (req: Request, res: Response, next: NextFunction): Promise<void> => {
       try {
         const { user, tokens } = await userService.createUser(req.body);
-        
+
         res.status(201).json({
-          status: 'success',
+          status: "success",
           data: {
             user,
             tokens,
@@ -22,17 +22,17 @@ export class AuthController {
       }
     },
   ];
-  
+
   public login = [
     validate(loginSchema),
     async (req: Request, res: Response, next: NextFunction): Promise<void> => {
       try {
-        const { username, password } = req.body;
-        
-        const { user, tokens } = await userService.login(username, password);
-        
+        const { email, password } = req.body;
+
+        const { user, tokens } = await userService.login(email, password);
+
         res.status(200).json({
-          status: 'success',
+          status: "success",
           data: {
             user,
             tokens,
@@ -43,11 +43,15 @@ export class AuthController {
       }
     },
   ];
-  
-  public getProfile = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+
+  public getProfile = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<void> => {
     try {
       res.status(200).json({
-        status: 'success',
+        status: "success",
         data: {
           user: req.user,
         },

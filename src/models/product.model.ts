@@ -112,6 +112,7 @@ const productSchema = new Schema<IProduct>(
     toJSON: {
       virtuals: true,
       transform: (_, ret) => {
+        ret.id = ret._id;
         delete ret._id;
         delete ret.__v;
         return ret;
@@ -120,6 +121,7 @@ const productSchema = new Schema<IProduct>(
     toObject: {
       virtuals: true,
       transform: (_, ret) => {
+        ret.id = ret._id;
         delete ret._id;
         delete ret.__v;
         return ret;
