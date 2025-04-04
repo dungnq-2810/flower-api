@@ -28,18 +28,18 @@ export class ProductController {
   public getAllProducts = async (
     req: Request,
     res: Response,
-    next: NextFunction,
+    next: NextFunction
   ): Promise<void> => {
     try {
       const page = parseInt(req.query.page as string) || 1;
       const limit = parseInt(req.query.limit as string) || 10;
       let sort = (req.query.sort as string) || "-createdAt";
-      
+
       // Handle special sorting options from frontend
-      if (sort === 'price-asc') {
-        sort = 'price';
-      } else if (sort === 'price-desc') {
-        sort = '-price';
+      if (sort === "price-asc") {
+        sort = "price";
+      } else if (sort === "price-desc") {
+        sort = "-price";
       }
 
       // Filters
@@ -48,7 +48,7 @@ export class ProductController {
       if (req.query.categoryId) {
         filters.categoryId = req.query.categoryId;
       }
-      
+
       if (req.query.supplierId) {
         filters.supplierId = req.query.supplierId;
       }
@@ -77,7 +77,7 @@ export class ProductController {
         page,
         limit,
         filters,
-        sort,
+        sort
       );
 
       res.status(200).json({
@@ -97,7 +97,7 @@ export class ProductController {
   public getProductById = async (
     req: Request,
     res: Response,
-    next: NextFunction,
+    next: NextFunction
   ): Promise<void> => {
     try {
       const productId = req.params.id;
@@ -120,7 +120,7 @@ export class ProductController {
   public getProductBySlug = async (
     req: Request,
     res: Response,
-    next: NextFunction,
+    next: NextFunction
   ): Promise<void> => {
     try {
       const slug = req.params.slug;
@@ -129,9 +129,7 @@ export class ProductController {
 
       res.status(200).json({
         status: "success",
-        data: {
-          product,
-        },
+        data: product,
       });
     } catch (error) {
       next(error);
@@ -163,7 +161,7 @@ export class ProductController {
   public deleteProduct = async (
     req: Request,
     res: Response,
-    next: NextFunction,
+    next: NextFunction
   ): Promise<void> => {
     try {
       const productId = req.params.id;
@@ -187,7 +185,7 @@ export class ProductController {
   public getProductWithVariants = async (
     req: Request,
     res: Response,
-    next: NextFunction,
+    next: NextFunction
   ): Promise<void> => {
     try {
       const productId = req.params.id;
