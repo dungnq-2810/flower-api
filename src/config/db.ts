@@ -9,17 +9,17 @@ export const connectDB = async (): Promise<void> => {
     await mongoose.connect(
       "mongodb+srv://admin:184321449@database-v1.txezs4v.mongodb.net/flower?retryWrites=true&w=majority&appName=database-v1",
       {
-        serverSelectionTimeoutMS: 30000, // Timeout sau 30 giây
-        socketTimeoutMS: 45000, // Socket timeout
+        serverSelectionTimeoutMS: 30000,
+        socketTimeoutMS: 45000,
         connectTimeoutMS: 30000,
-        maxPoolSize: 50, // Tăng pool size
-      },
+        maxPoolSize: 50,
+      }
     );
     console.log("MongoDB connected successfully");
   } catch (error) {
     console.error("MongoDB connection error:", error);
     console.log(
-      "Continuing without MongoDB connection. Some features might not work correctly.",
+      "Continuing without MongoDB connection. Some features might not work correctly."
     );
   }
 };
