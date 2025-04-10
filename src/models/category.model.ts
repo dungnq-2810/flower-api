@@ -1,17 +1,8 @@
 import { Schema, model } from "mongoose";
-import {
-  ICategory,
-  CategoryDocument,
-} from "../interfaces/models/category.interface";
+import { ICategory } from "../interfaces/models/category.interface";
 
 const categorySchema = new Schema<ICategory>(
   {
-    id: {
-      type: Number,
-      unique: true,
-      required: true,
-      min: 1,
-    },
     name: {
       type: String,
       required: true,
@@ -78,6 +69,6 @@ categorySchema.pre("save", async function (next) {
 });
 
 // @ts-ignore
-const Category = model<CategoryDocument>("Category", categorySchema);
+const Category = model<ICategory>("Category", categorySchema);
 
 export default Category;

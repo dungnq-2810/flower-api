@@ -1,5 +1,8 @@
-import { Schema, model } from 'mongoose';
-import { IComment, CommentDocument } from '../interfaces/models/comment.interface';
+import { Schema, model } from "mongoose";
+import {
+  IComment,
+  CommentDocument,
+} from "../interfaces/models/comment.interface";
 
 const commentSchema = new Schema<IComment>(
   {
@@ -14,7 +17,7 @@ const commentSchema = new Schema<IComment>(
       required: true,
     },
     userId: {
-      type: Number,
+      type: String,
       required: true,
     },
     userName: {
@@ -48,7 +51,7 @@ const commentSchema = new Schema<IComment>(
         delete ret._id;
         delete ret.__v;
         return ret;
-      }
+      },
     },
     toObject: {
       virtuals: true,
@@ -56,8 +59,8 @@ const commentSchema = new Schema<IComment>(
         delete ret._id;
         delete ret.__v;
         return ret;
-      }
-    }
+      },
+    },
   }
 );
 
@@ -69,7 +72,7 @@ commentSchema.index({ rating: -1 });
 commentSchema.index({ createdAt: -1 });
 
 // Auto-increment ID plugin
-commentSchema.pre('save', async function(next) {
+commentSchema.pre("save", async function (next) {
   const doc = this as any;
   if (!doc.id) {
     // @ts-ignore
@@ -80,6 +83,6 @@ commentSchema.pre('save', async function(next) {
 });
 
 // @ts-ignore
-const Comment = model<CommentDocument>('Comment', commentSchema);
+const Comment = model<CommentDocument>("Comment", commentSchema);
 
 export default Comment;

@@ -1,4 +1,4 @@
-import { Document } from 'mongoose';
+import { Document } from "mongoose";
 
 export interface IBlogPost {
   id?: number;
@@ -7,7 +7,7 @@ export interface IBlogPost {
   excerpt: string;
   content: string;
   image: string;
-  authorId: number;
+  authorId: string;
   authorName: string;
   createdAt: string;
   tags: string[];

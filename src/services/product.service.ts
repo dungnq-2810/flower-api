@@ -1,4 +1,4 @@
-import { Types, model } from "mongoose";
+import mongoose, { Types } from "mongoose";
 import Product from "../models/product.model";
 import Category from "../models/category.model";
 import Variant from "../models/variant.model";
@@ -6,7 +6,6 @@ import {
   IProduct,
   ProductDocument,
 } from "../interfaces/models/product.interface";
-import { CategoryDocument } from "../interfaces/models/category.interface";
 import { VariantDocument } from "../interfaces/models/variant.interface";
 import { HttpException } from "../middlewares/error.middleware";
 
@@ -19,18 +18,23 @@ export class ProductService {
     }
 
     // Check if category exists by numeric id
-    const category = await Category.findOne({ id: productData.categoryId });
+    const category = await Category.findById(productData.categoryId);
     if (!category) {
       throw new HttpException(404, "Category not found");
     }
+    let newProduct: ProductDocument;
+    try {
+      const newProduct = await Product.create(productData);
+      // Update product count in category
+      await Category.findOneAndUpdate(
+        { id: productData.categoryId },
+        { $inc: { productCount: 1 } }
+      );
 
-    const newProduct = await Product.create(productData);
-
-    // Update product count in category
-    await Category.findOneAndUpdate(
-      { id: productData.categoryId },
-      { $inc: { productCount: 1 } }
-    );
+      return newProduct.toObject<ProductDocument>();
+    } catch (error) {
+      console.log(error);
+    }
 
     return newProduct.toObject<ProductDocument>();
   }
@@ -77,18 +81,14 @@ export class ProductService {
     totalCount: number;
     totalPages: number;
   }> {
-    console.log("Getting all products with params:", {
-      page,
-      limit,
-      filters,
-      sort,
-    });
     const query: Record<string, any> = {};
 
     // Apply filters
     if (filters.categoryId) {
-      query.categoryId = filters.categoryId;
+      query.categoryId = new mongoose.Types.ObjectId(filters.categoryId);
     }
+
+    console.log(query);
 
     if (filters.supplierId) {
       query.supplierId = filters.supplierId;
@@ -131,26 +131,17 @@ export class ProductService {
     }
 
     const [products, totalCount] = await Promise.all([
-      Product.find(query)
-        .skip(skip)
-        .limit(limit)
-        .sort(sortOption)
-        .populate("categoryId", "name slug"),
+      Product.find(query).skip(skip).limit(limit).sort(sortOption),
       Product.countDocuments(query),
     ]);
     // Check if products collection is empty
-    const count = await Product.countDocuments();
     const totalPages = Math.ceil(totalCount / limit);
-    console.log({
-      products,
-    });
 
     const result = {
       products: products.map((product) => product.toObject<ProductDocument>()),
       totalCount,
       totalPages,
     };
-    console.log("Products found:", result.totalCount);
     return result;
   }
 

@@ -1,8 +1,7 @@
 import { Document } from "mongoose";
 
 export interface IOrderItem {
-  id?: number;
-  orderId: number;
+  orderId: string;
   productId: string;
   productName: string;
   productImage: string;
@@ -11,6 +10,4 @@ export interface IOrderItem {
   subtotal: number;
 }
 
-export interface OrderItemDocument extends IOrderItem, Document {
-  id: number;
-}
+export interface OrderItemDocument extends IOrderItem, Document {}

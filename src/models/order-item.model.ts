@@ -6,14 +6,8 @@ import {
 
 const orderItemSchema = new Schema<IOrderItem>(
   {
-    id: {
-      type: Number,
-      unique: true,
-      required: true,
-      min: 1,
-    },
     orderId: {
-      type: Number,
+      type: String,
       required: true,
     },
     productId: {
@@ -66,20 +60,10 @@ const orderItemSchema = new Schema<IOrderItem>(
 );
 
 // Indexes
-orderItemSchema.index({ id: 1 }, { unique: true });
 orderItemSchema.index({ orderId: 1 });
 orderItemSchema.index({ productId: 1 });
 
-// Auto-increment ID plugin
-orderItemSchema.pre("save", async function (next) {
-  const doc = this as any;
-  if (!doc.id) {
-    // @ts-ignore
-    const lastOrderItem = await OrderItem.findOne().sort({ id: -1 }).limit(1);
-    doc.id = lastOrderItem ? lastOrderItem.id + 1 : 1;
-  }
-  next();
-});
+export { orderItemSchema };
 
 // @ts-ignore
 const OrderItem = model<OrderItemDocument>("OrderItem", orderItemSchema);

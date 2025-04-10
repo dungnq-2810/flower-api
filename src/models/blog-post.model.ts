@@ -1,5 +1,8 @@
-import { Schema, model } from 'mongoose';
-import { IBlogPost, BlogPostDocument } from '../interfaces/models/blog-post.interface';
+import { Schema, model } from "mongoose";
+import {
+  IBlogPost,
+  BlogPostDocument,
+} from "../interfaces/models/blog-post.interface";
 
 const blogPostSchema = new Schema<IBlogPost>(
   {
@@ -34,7 +37,7 @@ const blogPostSchema = new Schema<IBlogPost>(
       required: true,
     },
     authorId: {
-      type: Number,
+      type: String,
       required: true,
     },
     authorName: {
@@ -60,7 +63,7 @@ const blogPostSchema = new Schema<IBlogPost>(
         delete ret._id;
         delete ret.__v;
         return ret;
-      }
+      },
     },
     toObject: {
       virtuals: true,
@@ -68,21 +71,21 @@ const blogPostSchema = new Schema<IBlogPost>(
         delete ret._id;
         delete ret.__v;
         return ret;
-      }
-    }
+      },
+    },
   }
 );
 
 // Indexes
 blogPostSchema.index({ id: 1 }, { unique: true });
 blogPostSchema.index({ slug: 1 }, { unique: true });
-blogPostSchema.index({ title: 'text', content: 'text', excerpt: 'text' });
+blogPostSchema.index({ title: "text", content: "text", excerpt: "text" });
 blogPostSchema.index({ authorId: 1 });
 blogPostSchema.index({ tags: 1 });
 blogPostSchema.index({ createdAt: -1 });
 
 // Auto-increment ID plugin
-blogPostSchema.pre('save', async function(next) {
+blogPostSchema.pre("save", async function (next) {
   const doc = this as any;
   if (!doc.id) {
     // @ts-ignore
@@ -93,6 +96,6 @@ blogPostSchema.pre('save', async function(next) {
 });
 
 // @ts-ignore
-const BlogPost = model<BlogPostDocument>('BlogPost', blogPostSchema);
+const BlogPost = model<BlogPostDocument>("BlogPost", blogPostSchema);
 
 export default BlogPost;

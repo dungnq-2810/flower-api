@@ -1,9 +1,9 @@
-import { Document } from 'mongoose';
+import { Document } from "mongoose";
 
 export interface IComment {
   id?: number;
   productId: number;
-  userId: number;
+  userId: String;
   userName: string;
   userAvatar: string;
   rating: number;

@@ -12,5 +12,5 @@ export interface IUser {
 }
 
 export interface UserDocument extends IUser, Document {
-  id: number;
+  id: string;
 }

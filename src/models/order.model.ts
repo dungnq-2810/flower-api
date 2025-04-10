@@ -1,17 +1,18 @@
-import { Schema, model } from 'mongoose';
-import { IOrder, OrderDocument } from '../interfaces/models/order.interface';
+import mongoose, { Schema, model } from "mongoose";
+import { OrderDocument } from "../interfaces/models/order.interface";
+import { orderItemSchema } from "./order-item.model";
 
-const orderSchema = new Schema<IOrder>(
+const orderSchema = new Schema(
   {
-    id: {
-      type: Number,
+    orderId: {
+      type: String,
       unique: true,
       required: true,
       min: 1,
     },
     userId: {
-      type: Number,
-      required: true,
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
     },
     customerName: {
       type: String,
@@ -31,18 +32,18 @@ const orderSchema = new Schema<IOrder>(
     },
     status: {
       type: String,
-      enum: ['pending', 'processing', 'shipped', 'delivered', 'cancelled'],
-      default: 'pending',
+      enum: ["pending", "processing", "shipped", "delivered", "cancelled"],
+      default: "pending",
     },
     paymentMethod: {
       type: String,
-      enum: ['cod', 'bank_transfer', 'credit_card'],
+      enum: ["cod", "bank_transfer", "credit_card"],
       required: true,
     },
     paymentStatus: {
       type: String,
-      enum: ['pending', 'paid', 'failed'],
-      default: 'pending',
+      enum: ["pending", "paid", "failed"],
+      default: "pending",
     },
     subtotal: {
       type: Number,
@@ -69,6 +70,11 @@ const orderSchema = new Schema<IOrder>(
       type: String,
       default: null,
     },
+    items: {
+      type: [orderItemSchema],
+      required: true,
+      default: [],
+    },
     createdAt: {
       type: String,
       default: () => new Date().toISOString(),
@@ -76,48 +82,33 @@ const orderSchema = new Schema<IOrder>(
     updatedAt: {
       type: String,
       default: () => new Date().toISOString(),
-    }
+    },
   },
   {
     timestamps: true,
     toJSON: {
       virtuals: true,
       transform: (_, ret) => {
-        delete ret._id;
         delete ret.__v;
         return ret;
-      }
+      },
     },
     toObject: {
       virtuals: true,
       transform: (_, ret) => {
-        delete ret._id;
         delete ret.__v;
         return ret;
-      }
-    }
+      },
+    },
   }
 );
 
 // Indexes
-orderSchema.index({ id: 1 }, { unique: true });
+orderSchema.index({ orderId: 1 }, { unique: true });
 orderSchema.index({ userId: 1 });
 orderSchema.index({ status: 1 });
 orderSchema.index({ paymentStatus: 1 });
 orderSchema.index({ createdAt: -1 });
 
-// Auto-increment ID plugin
-orderSchema.pre('save', async function(next) {
-  const doc = this as any;
-  if (!doc.id) {
-    // @ts-ignore
-    const lastOrder = await Order.findOne().sort({ id: -1 }).limit(1);
-    doc.id = lastOrder ? lastOrder.id + 1 : 1;
-  }
-  next();
-});
-
-// @ts-ignore
-const Order = model<OrderDocument>('Order', orderSchema);
-
+const Order = model<OrderDocument>("Order", orderSchema);
 export default Order;

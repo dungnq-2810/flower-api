@@ -1,17 +1,8 @@
-import { Schema, model } from "mongoose";
-import {
-  IProduct,
-  ProductDocument,
-} from "../interfaces/models/product.interface";
+import mongoose, { Schema, model } from "mongoose";
+import { ProductDocument } from "../interfaces/models/product.interface";
 
-const productSchema = new Schema<IProduct>(
+const productSchema = new Schema(
   {
-    id: {
-      type: String,
-      unique: true,
-      required: true,
-      min: 1,
-    },
     name: {
       type: String,
       required: true,
@@ -49,12 +40,12 @@ const productSchema = new Schema<IProduct>(
       max: 100,
     },
     categoryId: {
-      type: String,
-      required: true,
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Category",
     },
     supplierId: {
-      type: String,
-      required: true,
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Supplier",
     },
     image: {
       type: String,
