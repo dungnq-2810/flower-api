@@ -321,4 +321,52 @@
  *         description: Unauthorized or incorrect current password
  *       500:
  *         description: Server error
+ * /auth/profile:
+ *   put:
+ *     summary: Update current user's profile
+ *     tags: [Authentication]
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               name:
+ *                 type: string
+ *                 description: Updated name of the user
+ *                 example: "Jane Doe"
+ *               phone:
+ *                 type: string
+ *                 description: Updated phone number
+ *                 example: "098-765-4321"
+ *               avatar:
+ *                 type: string
+ *                 format: uri
+ *                 description: Link to avatar image
+ *                 example: "https://example.com/avatar.jpg"
+ *     responses:
+ *       200:
+ *         description: User updated successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: string
+ *                   example: success
+ *                 data:
+ *                   type: object
+ *                   properties:
+ *                     user:
+ *                       $ref: '#/components/schemas/User'
+ *       400:
+ *         description: Invalid input
+ *       401:
+ *         description: Unauthorized - Missing or invalid token
+ *       500:
+ *         description: Server error
  */

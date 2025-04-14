@@ -1,7 +1,12 @@
 import { Request, Response, NextFunction } from "express";
 import userService from "../services/user.service";
 import { validate } from "../middlewares/validation.middleware";
-import { loginSchema, createUserSchema } from "../validations/user.validation";
+import {
+  loginSchema,
+  createUserSchema,
+  updateUserSchema,
+  updatePasswordSchema,
+} from "../validations/user.validation";
 
 export class AuthController {
   public register = [
@@ -60,6 +65,46 @@ export class AuthController {
       next(error);
     }
   };
+
+  public updateProfile = [
+    validate(updateUserSchema),
+    async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+      try {
+        const userId = req.user.id;
+
+        const updatedUser = await userService.updateUser(userId, req.body);
+
+        res.status(200).json({
+          status: "success",
+          data: {
+            user: updatedUser,
+          },
+        });
+      } catch (error) {
+        next(error);
+      }
+    },
+  ];
+
+  public updatePassword = [
+    validate(updatePasswordSchema),
+    async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+      try {
+        const userId = req.user.id;
+
+        const { currentPassword, newPassword } = req.body;
+
+        await userService.updatePassword(userId, currentPassword, newPassword);
+
+        res.status(200).json({
+          status: "success",
+          message: "Password updated successfully",
+        });
+      } catch (error) {
+        next(error);
+      }
+    },
+  ];
 }
 
 export default new AuthController();
