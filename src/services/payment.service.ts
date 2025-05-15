@@ -50,8 +50,9 @@ export class PaymentService {
 
         amount: total, // Số tiền được nhận từ yêu cầu
         description: `Pet Shop - Payment for order #${orderId}`, // Mô tả đơn hàng với orderId
-        bank_code: "",
-        callback_url: "https://flower-shop-api.onrender.com/api/v1/callback",
+        bank_code: "zalopayapp",
+        callback_url:
+          "https://flower-shop-api.onrender.com/api/v1/orders/callback",
       };
 
       const data =
