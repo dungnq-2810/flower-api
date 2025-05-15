@@ -271,7 +271,7 @@ export class OrderController {
       // Parse JSON string to object
       const parsedData = JSON.parse(embed_data);
       // Access id_order
-      const id_order = parsedData.id_order;
+      const id_order = parsedData.orderId;
       console.log(id_order);
       console.log({ app_id });
 
