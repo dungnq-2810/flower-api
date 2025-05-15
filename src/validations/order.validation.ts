@@ -10,7 +10,9 @@ export const createOrderSchema = Joi.object({
   status: Joi.string()
     .valid("pending", "confirmed", "shipped", "delivered", "cancelled")
     .required(),
-  paymentMethod: Joi.string().valid("cod", "paypal", "credit_card").required(),
+  paymentMethod: Joi.string()
+    .valid("cod", "bank_transfer", "credit_card")
+    .required(),
   paymentStatus: Joi.string().valid("pending", "paid", "failed").required(),
   subtotal: Joi.number().min(0).required(),
   shippingFee: Joi.number().min(0).required(),

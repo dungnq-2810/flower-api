@@ -1,12 +1,21 @@
 import { Request, Response, NextFunction } from "express";
 import { Types } from "mongoose";
 import orderService from "../services/order.service";
+import paymentService from "../services/payment.service";
 import { validate } from "../middlewares/validation.middleware";
+const CryptoJS = require("crypto-js");
 import {
   createOrderSchema,
   updateOrderStatusSchema,
 } from "../validations/order.validation";
 import { HttpException } from "../middlewares/error.middleware";
+
+const config = {
+  app_id: "2553",
+  key1: "PcY4iZIKFCIdgZvA6ueMcMHHUbRLYjPL",
+  key2: "kLtgPl8HHhfvMuDHPwKfgfsY4Ydm9eIz",
+  endpoint: "https://sb-openapi.zalopay.vn/v2/create",
+};
 
 export class OrderController {
   public createOrder = [
@@ -21,12 +30,25 @@ export class OrderController {
 
         const order = await orderService.createOrder(body);
 
-        res.status(201).json({
-          status: "success",
-          data: {
-            order,
-          },
-        });
+        if (order.paymentMethod === "bank_transfer") {
+          const paymentData = await paymentService.payment(
+            order.orderId,
+            order.total
+          );
+          res.status(201).json({
+            status: "success",
+            data: {
+              paymentData,
+            },
+          });
+        } else {
+          res.status(201).json({
+            status: "success",
+            data: {
+              order,
+            },
+          });
+        }
       } catch (error) {
         next(error);
       }
@@ -224,6 +246,54 @@ export class OrderController {
     } catch (error) {
       next(error);
     }
+  };
+
+  public callback = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<void> => {
+    const { data: dataStr, mac: reqMac } = req.body;
+    let result = { return_code: 0, return_message: "An error occurred" };
+
+    try {
+      // Kiểm tra tính toàn vẹn của dữ liệu
+      const mac = CryptoJS.HmacSHA256(dataStr, config.key2).toString();
+      if (reqMac !== mac) {
+        result.return_message = "MAC not equal";
+        res.json(result);
+      }
+
+      const dataJson = JSON.parse(dataStr);
+      const { app_trans_id, embed_data, app_id } = dataJson;
+      console.log({ app_trans_id });
+
+      // Parse JSON string to object
+      const parsedData = JSON.parse(embed_data);
+      // Access id_order
+      const id_order = parsedData.id_order;
+      console.log(id_order);
+      console.log({ app_id });
+
+      const orderId = id_order;
+      const status = "pending";
+
+      const updatedOrder = await orderService.updateOrderStatus(
+        orderId,
+        status
+      );
+
+      res.status(200).json({
+        status: "success",
+        data: {
+          order: updatedOrder,
+        },
+      });
+    } catch (error) {
+      result.return_message = error.message;
+    }
+
+    res.json(result);
   };
 }
 
