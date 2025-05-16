@@ -278,10 +278,12 @@ export class OrderController {
       const orderId = id_order;
       const status = "processing";
 
+      console.log("before update");
       const updatedOrder = await orderService.updateOrderStatus(
         orderId,
         status
       );
+      console.log("after update");
 
       if (updatedOrder) console.log(updatedOrder);
       else console.log({ status });
