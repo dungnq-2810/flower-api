@@ -276,7 +276,7 @@ export class OrderController {
       console.log({ app_id });
 
       const orderId = id_order;
-      const status = "pending";
+      const status = "processing";
 
       const updatedOrder = await orderService.updateOrderStatus(
         orderId,
