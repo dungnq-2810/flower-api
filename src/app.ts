@@ -21,7 +21,10 @@ class App {
     this.app.use(helmet());
     this.app.use(
       cors({
-        origin: "https://flower-shop-client.vercel.app",
+        origin: [
+          "https://flower-shop-client.vercel.app",
+          "http://localhost:3000",
+        ],
         credentials: true, // Nếu cần gửi cookie hoặc Authorization
       })
     );
