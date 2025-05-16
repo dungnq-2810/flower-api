@@ -278,6 +278,9 @@ export class OrderController {
       const orderId = id_order;
       const status = "processing";
 
+      const { order, items } = await orderService.getOrderById(orderId);
+      console.log({ order });
+      console.log({ items });
       console.log("before update");
       const updatedOrder = await orderService.updateOrderStatus(
         orderId,
