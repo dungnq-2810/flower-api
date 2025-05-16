@@ -282,7 +282,10 @@ export class OrderController {
         orderId,
         status
       );
-      console.log(updatedOrder);
+
+      if (updatedOrder) console.log(updatedOrder);
+      else console.log({ status });
+      console.log("Done ???");
 
       res.status(200).json({
         status: "success",
