@@ -65,19 +65,7 @@ const userSchema = new Schema<IUser>(
 );
 
 // Indexes
-userSchema.index({ id: 1 }, { unique: true });
 userSchema.index({ email: 1 }, { unique: true });
-
-// Auto-increment ID plugin
-userSchema.pre("save", async function (next) {
-  const doc = this as any;
-  if (!doc.id) {
-    // @ts-ignore
-    const lastUser = await User.findOne().sort({ id: -1 }).limit(1);
-    doc.id = lastUser ? lastUser.id + 1 : 1;
-  }
-  next();
-});
 
 // @ts-ignore
 const User = model<UserDocument>("User", userSchema);
